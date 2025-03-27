@@ -1,29 +1,44 @@
 import java.awt.image.BufferedImage;
 
+/**
+ * The Pixelate class is a subclass of the Converter class. It is responsible for 
+ * pixelating an image by dividing the image into blocks and replacing each block
+ * with the average color of the pixels within that block.
+ */
+
 public class Pixelate extends Converter {
 
-    // The size of the blocks for pixelation
-    private final int blockSize = 10;  // Default block size
+    // The size of the blocks for pixelation (default block size is 10)
+    private final int blockSize = 10;
 
+    /**
+     * Processes the image by pixelating it. The image is divided into blocks of pixels,
+     * and each block is replaced by the average color of the pixels in that block.
+     * 
+     * @param img The BufferedImage object representing the image to be processed.
+     */
+    
     @Override
     protected void processImage(BufferedImage img) {
+        // Get the width and height of the image
         int width = img.getWidth();
         int height = img.getHeight();
 
-        // Process each block of pixels
+        // Process each block of pixels in the image
         for (int y = 0; y < height; y += blockSize) {
             for (int x = 0; x < width; x += blockSize) {
-                // Calculate the average color for the block
+                // Variables to calculate the average color for the block
                 int avgRed = 0, avgGreen = 0, avgBlue = 0;
                 int count = 0;
 
-                // Loop through the block
+                // Loop through the block and accumulate the color values
                 for (int by = y; by < Math.min(y + blockSize, height); by++) {
                     for (int bx = x; bx < Math.min(x + blockSize, width); bx++) {
                         int pixel = img.getRGB(bx, by);
 
                         ARGB argb = new ARGB(pixel);
 
+                        // Accumulate the red, green, and blue components of each pixel
                         avgRed += argb.red;
                         avgGreen += argb.green;
                         avgBlue += argb.blue;
@@ -31,7 +46,7 @@ public class Pixelate extends Converter {
                     }
                 }
 
-                // Calculate the average color
+                // Calculate the average color for the block
                 avgRed /= count;
                 avgGreen /= count;
                 avgBlue /= count;
@@ -39,7 +54,8 @@ public class Pixelate extends Converter {
                 // Set the average color for each pixel in the block
                 for (int by = y; by < Math.min(y + blockSize, height); by++) {
                     for (int bx = x; bx < Math.min(x + blockSize, width); bx++) {
-                        ARGB newArgb = new ARGB(255, avgRed, avgGreen, avgBlue); // alpha set to 255 (opaque)
+                        // Create a new ARGB object with the average color and alpha set to 255 (opaque)
+                        ARGB newArgb = new ARGB(255, avgRed, avgGreen, avgBlue);
                         img.setRGB(bx, by, newArgb.toInt());
                     }
                 }
