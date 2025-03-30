@@ -145,7 +145,7 @@ public class EdgeDetection extends Converter {
         int nx = centerX + dx;
         int ny = centerY + dy;
         
-        // Only process valid pixels within image bounds
+        // Only process valid pixels
         if (nx >= 0 && nx < img.getWidth() && ny >= 0 && ny < img.getHeight()) {
             ARGB pixel = new ARGB(img.getRGB(nx, ny));
             // Convert to grayscale and apply kernel weight
