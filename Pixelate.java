@@ -1,9 +1,9 @@
 import java.awt.image.BufferedImage;
 
 /**
- * The Pixelate class is a subclass of the Converter class. It is responsible
- * for pixelating an image by dividing the image into blocks and replacing each
- * block with the average color of the pixels within that block.
+ * The Pixelate class extends the Converter class and applies a pixelation effect.  
+ * It does this by dividing the image into blocks and replacing each block  
+ * with the average color of the pixels inside it.  
  */
 
 public class Pixelate extends Converter {
@@ -12,14 +12,12 @@ public class Pixelate extends Converter {
 	private final int blockSize = 10;
 
 	/**
-	 * Processes the image by pixelating it.
-	 * 
-	 * The method divides the image into blocks of pixels, and each block is
-	 * replaced by the average color of the pixels in that block.
-	 * 
-	 * @param img The BufferedImage object representing the image to be processed
-	 * @return A new BufferedImage representing the pixelated image
-	 */
+ 	 * Pixelates the image by dividing it into blocks.  
+ 	 * Each block is replaced with the average color of its pixels.  
+ 	 * 
+ 	 * @param img The image to be processed  
+ 	 * @return A new image with a pixelated effect  
+ 	 */
 
 	@Override
 	protected BufferedImage processImage(BufferedImage img) {
