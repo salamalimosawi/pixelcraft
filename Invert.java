@@ -9,6 +9,16 @@ import java.awt.image.BufferedImage;
 public class Invert extends Converter {
     private static final int BLOCK_SIZE = 16; // Process 16x16 blocks at a time
 
+    /**
+     * Processes the given image by inverting all its pixels recursively.
+     * Creates a new BufferedImage with the same dimensions as the input image,
+     * then recursively processes the image in blocks (16x16 pixels by default)
+     * to invert each pixel's color values (red, green, blue).
+     * 
+     * @param img The input image to be processed
+     * @return A new BufferedImage containing the inverted version of the input image
+     */
+
     @Override
     protected BufferedImage processImage(BufferedImage img) {
         BufferedImage processedImg = new BufferedImage(
@@ -23,6 +33,14 @@ public class Invert extends Converter {
      * Recursively processes blocks of the image.
      * If the block is small enough (<= BLOCK_SIZE), invert its pixels recursively.
      * Otherwise, split it into smaller blocks and recurse.
+     *
+     * @param original The original source image to read pixels from
+     * @param processed The destination image where inverted pixels will be written
+     * @param startX The starting x-coordinate of the current block to process
+     * @param startY The starting y-coordinate of the current block to process
+     * @param width The width of the current block to process
+     * @param height The height of the current block to process
+     * @return The processed image with inverted colors
      */
 	
     private BufferedImage invertRecursively(
@@ -55,7 +73,21 @@ public class Invert extends Converter {
         return processed;
     }
 
-    /** Recursively inverts all pixels in a given block (no loops) */
+    /**
+     * Recursively inverts all pixels in a specified rectangular block without using loops.
+     * Processes pixels row by row, moving to the next pixel column until the end of the row,
+     * then moves to the next row until the entire block is processed.
+     * 
+     * @param original The source image containing the original pixels
+     * @param processed The destination image where inverted pixels will be stored
+     * @param startX The starting x-coordinate of the block boundary
+     * @param startY The starting y-coordinate of the block boundary
+     * @param endX The ending x-coordinate of the block boundary (exclusive)
+     * @param endY The ending y-coordinate of the block boundary (exclusive)
+     * @param currentX The current x-coordinate being processed (for recursion tracking)
+     * @param currentY The current y-coordinate being processed (for recursion tracking)
+     */
+	
     private void invertBlockRecursively(
         BufferedImage original,
         BufferedImage processed,
@@ -86,7 +118,15 @@ public class Invert extends Converter {
         invertBlockRecursively(original, processed, startX, startY, endX, endY, currentX + 1, currentY);
     }
 
-    /** Inverts a single pixel's color */
+    /**
+     * Inverts the RGB color channels of a single pixel while preserving its alpha (transparency).
+     * The inversion is performed by subtracting each color component (red, green, blue) from 255.
+     * The alpha channel remains unchanged to maintain transparency.
+     * 
+     * @param pixel The original pixel value in ARGB format (32-bit integer)
+     * @return A new pixel value with inverted RGB channels and original alpha
+     */
+	
     private int invertPixel(int pixel) {
         int alpha = (pixel >> 24) & 0xFF;
         int red = 255 - ((pixel >> 16) & 0xFF);
