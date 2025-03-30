@@ -1,65 +1,97 @@
 import java.awt.image.BufferedImage;
 
 /**
- * The Invert class extends the Converter class and flips the colors of an image.
- * It does this by subtracting each RGB value (red, green, blue) from 255,
- * turning each color into its opposite (complementary color).
+ * Inverts the colors of an image by turning each pixel into its opposite color.
+ * Uses a recursive approach to process the image without loops.
+ * Works by subtracting each color value (red, green, blue) from 255.
  */
 
 public class Invert extends Converter {
+    private static final int BLOCK_SIZE = 16; // Process 16x16 blocks at a time
 
-	/**
-	 * Processes the image by inverting the colors of all pixels.
-	 * 
-	 * @param img The BufferedImage object representing the image to be processed.
-	 */
+    @Override
+    protected BufferedImage processImage(BufferedImage img) {
+        BufferedImage processedImg = new BufferedImage(
+            img.getWidth(), 
+            img.getHeight(), 
+            BufferedImage.TYPE_INT_ARGB
+        );
+        return invertRecursively(img, processedImg, 0, 0, img.getWidth(), img.getHeight());
+    }
 
-	@Override
-	protected BufferedImage processImage(BufferedImage img) {
-		// Call the method to invert the image colors iteratively
-		return invertImageIteratively(img);
-	}
+    /**
+     * Recursively processes blocks of the image.
+     * If the block is small enough (<= BLOCK_SIZE), invert its pixels recursively.
+     * Otherwise, split it into smaller blocks and recurse.
+     */
+	
+    private BufferedImage invertRecursively(
+        BufferedImage original,
+        BufferedImage processed,
+        int startX,
+        int startY,
+        int width,
+        int height
+    ) {
+        // Base case: If the block is small enough, process its pixels recursively
+        if (width <= BLOCK_SIZE && height <= BLOCK_SIZE) {
+            invertBlockRecursively(original, processed, startX, startY, startX + width, startY + height, startX, startY);
+            return processed;
+        }
 
-	/**
-	 * Iteratively inverts the color of each pixel in the image. For each pixel, the
-	 * RGB components are inverted by subtracting each component (red, green, blue)
-	 * from 255.
-	 * 
-	 * @param img The BufferedImage object representing the image to be processed.
-	 */
+        // Split into smaller blocks and recurse
+        int halfWidth = width / 2;
+        int halfHeight = height / 2;
 
-	private BufferedImage invertImageIteratively(BufferedImage img) {
-		// Get the width and height of the image
-		int width = img.getWidth();
-		int height = img.getHeight();
+        // Top-left block
+        invertRecursively(original, processed, startX, startY, halfWidth, halfHeight);
+        // Top-right block
+        invertRecursively(original, processed, startX + halfWidth, startY, width - halfWidth, halfHeight);
+        // Bottom-left block
+        invertRecursively(original, processed, startX, startY + halfHeight, halfWidth, height - halfHeight);
+        // Bottom-right block
+        invertRecursively(original, processed, startX + halfWidth, startY + halfHeight, width - halfWidth, height - halfHeight);
 
-		// Create a new inverted image with the same <width> and <height>, and specify
-		// the type of
-		// the color value
-		BufferedImage processedImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        return processed;
+    }
 
-		// Iterate through each pixel (x, y) in the image
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				// Get the RGB value of the current pixel
-				int pixel = img.getRGB(x, y);
+    /** Recursively inverts all pixels in a given block (no loops) */
+    private void invertBlockRecursively(
+        BufferedImage original,
+        BufferedImage processed,
+        int startX,
+        int startY,
+        int endX,
+        int endY,
+        int currentX,
+        int currentY
+    ) {
+        // Base case: If we've processed all rows, return
+        if (currentY >= endY) {
+            return;
+        }
 
-				// Create an ARGB object to extract the individual color components (alpha, red,
-				// green, blue)
-				ARGB argb = new ARGB(pixel);
+        // Base case: If we've processed all columns in this row, move to the next row
+        if (currentX >= endX) {
+            invertBlockRecursively(original, processed, startX, startY, endX, endY, startX, currentY + 1);
+            return;
+        }
 
-				// Invert the red, green, and blue components by subtracting each from 255
-				int invertedRed = 255 - argb.red;
-				int invertedGreen = 255 - argb.green;
-				int invertedBlue = 255 - argb.blue;
+        // Invert the current pixel
+        int pixel = original.getRGB(currentX, currentY);
+        int invertedPixel = invertPixel(pixel);
+        processed.setRGB(currentX, currentY, invertedPixel);
 
-				// Create a new ARGB object with the inverted colors
-				ARGB invertedARGB = new ARGB(argb.alpha, invertedRed, invertedGreen, invertedBlue);
+        // Move to the next pixel in the row
+        invertBlockRecursively(original, processed, startX, startY, endX, endY, currentX + 1, currentY);
+    }
 
-				// Set the new inverted pixel value at (x, y) in the image
-				processedImg.setRGB(x, y, invertedARGB.toInt());
-			}
-		}
-		return processedImg;
-	}
+    /** Inverts a single pixel's color */
+    private int invertPixel(int pixel) {
+        int alpha = (pixel >> 24) & 0xFF;
+        int red = 255 - ((pixel >> 16) & 0xFF);
+        int green = 255 - ((pixel >> 8) & 0xFF);
+        int blue = 255 - (pixel & 0xFF);
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    }
 }
