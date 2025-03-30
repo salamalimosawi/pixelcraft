@@ -3,9 +3,9 @@ import java.awt.image.BufferedImage;
 /**
  * The EdgeDetection class implements a recursive Sobel edge detection algorithm.
  * It converts an input image into an edge map where edges are highlighted in white
- * against a black background. The implementation uses pure recursion (no loops)
- * while avoiding stack overflow through batched row processing.
- * 
+ * against a black background. The implementation is fully recursive, ande processes
+ * the image row-by-row to avoid stack overflow.
+ *
  * <p>The Sobel operator uses two 3x3 kernels (Gx for horizontal and Gy for vertical
  * edge detection) which are convolved with the image to detect edges.</p>
  */
