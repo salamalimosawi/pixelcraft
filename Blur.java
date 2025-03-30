@@ -2,9 +2,8 @@ import java.awt.image.BufferedImage;
 
 /**
  * Applies an intense 5x5 box blur effect to images while preserving transparency.
- * This implementation uses a 25-pixel neighborhood for maximum blur intensity,
- * creating a strong smoothing effect suitable for background softening or
- * dramatic visual effects.
+ * This implementation uses a 25-pixel neighborhood for maximum blur intensity.
+ * 
  */
 public class Blur extends Converter {
 
