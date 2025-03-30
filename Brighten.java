@@ -1,11 +1,11 @@
 import java.awt.image.BufferedImage;
 
 /**
- * The Brighten class is a subclass of the Converter class. It is responsible
- * for increasing the brightness of an image by a given factor. The class
- * iterates over all pixels in the image, extracts the RGB values, and adjusts
- * the brightness of each pixel while ensuring the new RGB values stay within
- * the valid range of [0, 255].
+ * The Brighten class is a child of the Converter class. 
+ * Its job is to make an image brighter by a certain amount. 
+ * It goes through every pixel, gets the RGB values, increases 
+ * their brightness, and makes sure they don’t go over the 
+ * allowed range of 0 to 255.
  */
 
 public class Brighten extends Converter {
@@ -14,14 +14,12 @@ public class Brighten extends Converter {
 	private int brightnessFactor = 90;
 
 	/**
-	 * Processes the image by adjusting the brightness of each pixel's color.
-	 * 
-	 * This method produces a new image with each pixel's red, green, and blue
-	 * components increased by a brightness factor. The new values are restricted at
-	 * 255 to ensure they stay within the valid RGB range.
-	 * 
-	 * @param img The BufferedImage object representing the image to be processed
-	 * @return A new BufferedImage with the adjusted brightness
+	 * This method adjusts the brightness of each pixel in the image. 
+  	 * It creates a new image where the red, green, and blue values of each pixel 
+    	 * are increased by a brightness factor. If any value goes over 255, it’s 
+      	 * capped to stay within the valid RGB range.
+  	 * @param img – The image to be processed
+    	 * @return A new image with adjusted brightness
 	 */
 
 	@Override
