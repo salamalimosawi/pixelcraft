@@ -1,10 +1,9 @@
 import java.awt.image.BufferedImage;
 
 /**
- * The Invert class is a subclass of the Converter class. It is responsible for
- * inverting the colors of an image. Inversion is done by subtracting each RGB
- * component (red, green, blue) from 255, effectively flipping the color to its
- * complementary color.
+ * The Invert class extends the Converter class and flips the colors of an image.
+ * It does this by subtracting each RGB value (red, green, blue) from 255,
+ * turning each color into its opposite (complementary color).
  */
 
 public class Invert extends Converter {
