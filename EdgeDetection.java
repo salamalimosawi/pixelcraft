@@ -1,43 +1,37 @@
 import java.awt.image.BufferedImage;
 
 /**
- * The EdgeDetection class implements a recursive Sobel edge detection algorithm.
- * It converts an input image into an edge map where edges are highlighted in white
- * against a black background. The implementation is fully recursive, ande processes
- * the image row-by-row to avoid stack overflow.
- *
- * <p>The Sobel operator uses two 3x3 kernels (Gx for horizontal and Gy for vertical
- * edge detection) which are convolved with the image to detect edges.</p>
+ * Implements recursive Sobel edge detection algorithm for images.
+ * This class converts an input image into an edge map where edges are highlighted
+ * in white against a black background. The implementation uses the Sobel operator
+ * with two 3x3 kernels (horizontal and vertical) to detect edges in both directions.
+ * The algorithm is fully recursive and processes the image row-by-row to avoid
+ * stack overflow.
  */
 public class EdgeDetection extends Converter {
     
     /**
      * The horizontal Sobel kernel for detecting vertical edges.
-     * Kernel values: 
-     * [-1, 0, 1]
-     * [-2, 0, 2]
-     * [-1, 0, 1]
      */
     private static final int[][] GX = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
     
     /**
      * The vertical Sobel kernel for detecting horizontal edges.
-     * Kernel values:
-     * [-1, -2, -1]
-     * [ 0,  0,  0]
-     * [ 1,  2,  1]
      */
     private static final int[][] GY = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
     
     /**
-     * The number of rows to process in each batch. Smaller values reduce
-     * recursion depth but may increase total recursive calls. A value of 10-20
-     * provides good balance for most images.
+     * The number of rows to process in each batch.
+     * Smaller values reduce recursion depth but may increase total recursive calls.
+     * A value of 10-20 provides good balance for most images.
      */
     private static final int ROW_BATCH_SIZE = 10;
-
+    
     /**
      * Processes the input image to detect edges using recursive Sobel operator.
+     * This method applies the Sobel edge detection algorithm recursively to identify
+     * edges in the image. The output is a grayscale image where edge pixels are white
+     * and non-edge pixels are black.
      * 
      * @param img The input image to be processed
      * @return A new BufferedImage with edges highlighted in white on black background
@@ -48,9 +42,12 @@ public class EdgeDetection extends Converter {
         processRows(img, result, 1, Math.min(ROW_BATCH_SIZE, img.getHeight() - 2));
         return result;
     }
-
+    
     /**
      * Recursively processes the image in batches of rows to limit stack depth.
+     * This method divides the image into horizontal batches and processes each
+     * batch recursively. Edge rows (y=0 and y=height-1) are skipped to avoid
+     * out-of-bounds issues with the 3x3 kernel.
      * 
      * @param src The source image to read pixels from
      * @param dest The destination image to write edge pixels to
@@ -69,9 +66,12 @@ public class EdgeDetection extends Converter {
         int nextEnd = Math.min(nextStart + ROW_BATCH_SIZE - 1, src.getHeight() - 2);
         processRows(src, dest, nextStart, nextEnd);
     }
-
+    
     /**
-     * Processes a batch of rows column by column.
+     * Processes a batch of rows column by column recursively.
+     * For each column in the current batch of rows, this method applies the
+     * Sobel operator to detect edges. Edge columns (x=0 and x=width-1) are
+     * skipped to avoid kernel boundary issues.
      * 
      * @param src Source image
      * @param dest Destination image
@@ -90,9 +90,12 @@ public class EdgeDetection extends Converter {
         // Process next column recursively
         processRowBatch(src, dest, startY, endY, x + 1);
     }
-
+    
     /**
-     * Processes a single column in the specified row range.
+     * Processes a single column in the specified row range recursively.
+     * For each pixel in the column, this method calculates horizontal (Gx) and
+     * vertical (Gy) gradients using the Sobel kernels, then computes the edge
+     * magnitude as √(Gx² + Gy²).
      * 
      * @param src Source image
      * @param dest Destination image
@@ -118,9 +121,12 @@ public class EdgeDetection extends Converter {
         // Process next row in this column
         processColumn(src, dest, x, y + 1, endY);
     }
-
+    
     /**
      * Recursively calculates the gradient value using the specified kernel.
+     * This method convolves a 3x3 Sobel kernel with the neighborhood around
+     * the center pixel. The image is first converted to grayscale, then each
+     * neighbor is weighted by the corresponding kernel value.
      * 
      * @param img The source image
      * @param centerX X-coordinate of center pixel
@@ -141,7 +147,7 @@ public class EdgeDetection extends Converter {
         if (dx > 1) {
             return calculateGradient(img, centerX, centerY, kernel, -1, dy + 1, sum, count);
         }
-
+        
         int nx = centerX + dx;
         int ny = centerY + dy;
         
