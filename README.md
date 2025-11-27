@@ -3,7 +3,6 @@
 A Java image processing library implementing common image manipulation algorithms.
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
 ## About
 
