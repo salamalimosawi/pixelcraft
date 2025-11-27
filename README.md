@@ -1,126 +1,182 @@
-# PixelCraft 🎨
+# PixelCraft
 
-A powerful Java-based image manipulation tool that provides various converters and effects for image processing.
+A Java image processing library implementing common image manipulation algorithms.
 
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
 
-## 📋 Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Usage Examples](#usage-examples)
-- [Available Effects](#available-effects)
-- [Project Structure](#project-structure)
-- [Technical Implementation](#technical-implementation)
-- [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
-- [Contributors](#contributors)
+## About
 
-## 🌟 Overview
+PixelCraft is an educational image processing library that demonstrates core computer vision algorithms and object-oriented design patterns in Java. The project implements the Template Method pattern for a clean, extensible architecture.
 
-PixelCraft is a comprehensive image processing library built in Java that demonstrates advanced object-oriented programming principles and image manipulation techniques. The project features a modular converter architecture using the Template Method design pattern, allowing for easy extensibility and maintenance.
+## Features
 
-**Key Highlights:**
-- 🎯 10+ image processing effects
-- 🔄 Recursive algorithm implementations
-- 🏗️ Clean architecture with Template Method pattern
-- 📦 Zero external dependencies (pure Java)
-- 📝 Comprehensive API documentation
+- Grayscale and sepia tone color transformations
+- Box blur and Sobel edge detection
+- Geometric transformations (rotation, flipping)
+- Creative effects (pixelation, glitch, inversion)
+- Brightness adjustment
+- Custom ARGB color manipulation
 
-## ✨ Features
+## Installation
 
-### Color Transformations
-- **Grayscale Conversion**: Convert images to monochrome using pixel averaging
-- **Sepia Tone**: Apply vintage brown-toned photographic effects
-- **Color Inversion**: Create negative/inverted color effects
-- **ARGB Manipulation**: Direct control over alpha, red, green, and blue channels
-
-### Image Effects
-- **Blur**: Apply 5x5 box blur for smooth effects
-- **Brightness Adjustment**: Dynamically increase image brightness
-- **Edge Detection**: Sobel operator-based edge detection with recursive implementation
-- **Glitch Effect**: Digital distortion through RGB channel shifting
-- **Pixelation**: Create retro-style mosaic effects
-
-### Geometric Transformations
-- **90° Rotation**: Clockwise image rotation
-- **Horizontal Flip**: Mirror images along vertical axis
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- **Java Development Kit (JDK) 8 or higher**
-- An IDE (IntelliJ IDEA, Eclipse, or VS Code recommended)
-- Basic knowledge of Java and image processing concepts
-
-### Installation
-
-1. **Clone the repository:**
 ```bash
 git clone https://github.com/salamalimosawi/pixelcraft.git
 cd pixelcraft
-```
-
-2. **Compile the project:**
-```bash
 javac *.java
 ```
 
-3. **Prepare your images:**
-   - Place input images in the project directory
-   - Ensure the `Image-Results/` folder exists for output
-
-4. **Run the application:**
-```bash
-java PixelCraft
-```
-
-## 💡 Usage Examples
-
-### Basic Grayscale Conversion
+## Quick Start
 
 ```java
 import java.io.IOException;
 
 public class Example {
-    public static void main(String[] args) {
-        try {
-            // Create a grayscale converter
-            Converter grayscale = new Grayscale();
-            
-            // Convert the image
-            grayscale.convert("input.jpg", "Image-Results/output_grayscale.png");
-            
-            System.out.println("Conversion successful!");
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
+    public static void main(String[] args) throws IOException {
+        Converter converter = new Grayscale();
+        converter.convert("input.jpg", "output.png");
     }
 }
 ```
 
-### Applying Multiple Effects
+## Usage
+
+### Grayscale Conversion
 
 ```java
-public class ChainedEffects {
-    public static void main(String[] args) throws IOException {
-        // Apply blur
-        Converter blur = new Blur();
-        blur.convert("original.jpg", "step1_blurred.png");
-        
-        // Apply sepia tone
-        Converter sepia = new Sepia();
-        sepia.convert("step1_blurred.png", "step2_sepia.png");
-        
-        // Brighten the image
-        Converter brighten = new Brighten();
-        brighten.convert("step2_sepia.png", "final_result.png");
+Converter grayscale = new Grayscale();
+grayscale.convert("image.jpg", "grayscale.png");
+```
+
+### Sepia Tone
+
+```java
+Converter sepia = new Sepia();
+sepia.convert("image.jpg", "sepia.png");
+```
+
+### Blur Effect
+
+```java
+Converter blur = new Blur();
+blur.convert("image.jpg", "blurred.png");
+```
+
+### Edge Detection
+
+```java
+Converter edges = new EdgeDetection();
+edges.convert("image.jpg", "edges.png");
+```
+
+### Other Effects
+
+```java
+// Brightness adjustment
+new Brighten().convert("dark.jpg", "bright.png");
+
+// 90-degree rotation
+new Rotate().convert("portrait.jpg", "landscape.png");
+
+// Horizontal flip
+new FlipHorizontal().convert("image.jpg", "flipped.png");
+
+// Pixelation effect
+new Pixelate().convert("image.jpg", "pixelated.png");
+
+// Color inversion
+new Invert().convert("image.jpg", "inverted.png");
+
+// Glitch effect
+new Glitch().convert("image.jpg", "glitched.png");
+```
+
+## Architecture
+
+The project uses the Template Method pattern. All converters extend the abstract `Converter` class:
+
+```java
+public abstract class Converter {
+    public void convert(String inputFileName, String outputFileName) throws IOException {
+        File inputFile = new File(inputFileName);
+        BufferedImage img = ImageIO.read(inputFile);
+        BufferedImage processedImg = processImage(img);
+        File outputFile = new File(outputFileName);
+        ImageIO.write(processedImg, "PNG", outputFile);
     }
+    
+    protected abstract BufferedImage processImage(BufferedImage img);
 }
 ```
 
-### Custom Effect Implementation
+Subclasses implement `processImage()` to define specific transformations.
+
+## Implementation Details
+
+**Grayscale**: Simple averaging method (R+G+B)/3
+
+**Sepia**: Standard sepia matrix transformation
+- Red = 0.393R + 0.769G + 0.189B
+- Green = 0.349R + 0.686G + 0.168B
+- Blue = 0.272R + 0.534G + 0.131B
+
+**Blur**: 5x5 box blur using neighborhood averaging
+
+**Edge Detection**: Recursive Sobel operator with 3x3 kernels
+
+**Brighten**: Additive brightness (+90 default factor)
+
+**Rotate**: 90-degree clockwise transformation
+
+**Flip**: Horizontal mirroring along vertical axis
+
+**Pixelate**: Block averaging (10x10 default block size)
+
+**Invert**: RGB channel inversion (255 - value)
+
+**Glitch**: Random RGB channel shifting per scanline
+
+## Project Structure
+
+```
+pixelcraft/
+├── ARGB.java              # ARGB color model utility
+├── Converter.java         # Abstract base class
+├── Blur.java
+├── Brighten.java
+├── EdgeDetection.java
+├── FlipHorizontal.java
+├── Glitch.java
+├── Grayscale.java
+├── Invert.java
+├── Pixelate.java
+├── Rotate.java
+├── Sepia.java
+├── PixelCraft.java        # Main entry point
+└── Image-Results/         # Output directory
+```
+
+## Technical Specifications
+
+- **Language**: Java 8+
+- **Dependencies**: None (uses standard Java libraries only)
+- **Input Formats**: JPG, PNG, BMP, GIF
+- **Output Format**: PNG (preserves transparency)
+- **Image Processing**: java.awt.image.BufferedImage
+- **I/O**: javax.imageio.ImageIO
+
+## Algorithms
+
+Several converters implement recursive algorithms:
+
+- `EdgeDetection`: Batch-based row processing with recursive gradient calculation
+- `FlipHorizontal`: Recursive pixel-by-pixel traversal
+- `Invert`: Divide-and-conquer block processing (16x16 blocks)
+- `Sepia`: Tail-recursive row processing
+
+## Extending PixelCraft
+
+Create a custom converter by extending the `Converter` class:
 
 ```java
 import java.awt.image.BufferedImage;
@@ -128,321 +184,49 @@ import java.awt.image.BufferedImage;
 public class CustomEffect extends Converter {
     @Override
     protected BufferedImage processImage(BufferedImage img) {
-        // Your custom image processing logic here
-        BufferedImage result = new BufferedImage(
-            img.getWidth(), 
-            img.getHeight(), 
-            BufferedImage.TYPE_INT_ARGB
-        );
+        int width = img.getWidth();
+        int height = img.getHeight();
+        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         
-        // Process pixels...
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // Custom processing logic
+                int pixel = img.getRGB(x, y);
+                ARGB color = new ARGB(pixel);
+                
+                // Modify color values
+                ARGB newColor = new ARGB(color.alpha, color.red, color.green, color.blue);
+                result.setRGB(x, y, newColor.toInt());
+            }
+        }
         
         return result;
     }
 }
 ```
 
-### Working with ARGB Values
+## Known Limitations
 
-```java
-// Extract color components from a pixel
-int pixel = image.getRGB(x, y);
-ARGB color = new ARGB(pixel);
+- Single-threaded processing (no parallel optimization)
+- Fixed parameters (blur radius, block size, brightness factor)
+- Rotation limited to 90-degree clockwise only
+- No GUI interface
+- Output always PNG format
 
-System.out.println("Red: " + color.red);
-System.out.println("Green: " + color.green);
-System.out.println("Blue: " + color.blue);
-System.out.println("Alpha: " + color.alpha);
+## Future Work
 
-// Create a new color
-ARGB newColor = new ARGB(255, 100, 150, 200); // ARGB values
-int packedColor = newColor.toInt();
-image.setRGB(x, y, packedColor);
-```
+- Add configurable parameters for effects
+- Implement multi-threading for large images
+- Support for arbitrary rotation angles
+- Additional filters (sharpen, emboss, Gaussian blur)
+- Command-line argument parsing
+- GUI interface
 
-## 🎨 Available Effects
+## Contributing
 
-### 1. **Grayscale** (`Grayscale.java`)
-Converts images to monochrome using simple averaging method.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-**Formula:** `Gray = (R + G + B) / 3`
-
-**Usage:**
-```java
-Converter converter = new Grayscale();
-converter.convert("color.jpg", "grayscale.png");
-```
-
----
-
-### 2. **Sepia Tone** (`Sepia.java`)
-Applies a warm, vintage brown tone reminiscent of old photographs.
-
-**Transformation Matrix:**
-- Red = 0.393R + 0.769G + 0.189B
-- Green = 0.349R + 0.686G + 0.168B
-- Blue = 0.272R + 0.534G + 0.131B
-
-**Usage:**
-```java
-Converter converter = new Sepia();
-converter.convert("photo.jpg", "vintage.png");
-```
-
----
-
-### 3. **Blur** (`Blur.java`)
-Applies a 5x5 box blur effect for smooth, soft images.
-
-**Method:** Averages pixels in a 5x5 neighborhood  
-**Preserves:** Alpha channel (transparency)
-
-**Usage:**
-```java
-Converter converter = new Blur();
-converter.convert("sharp.jpg", "blurred.png");
-```
-
----
-
-### 4. **Brighten** (`Brighten.java`)
-Increases image brightness by adding a constant value to each RGB channel.
-
-**Default Factor:** +90  
-**Method:** Additive brightening with clamping at 255
-
-**Usage:**
-```java
-Converter converter = new Brighten();
-converter.convert("dark.jpg", "bright.png");
-```
-
----
-
-### 5. **Edge Detection** (`EdgeDetection.java`)
-Detects edges using the Sobel operator with recursive implementation.
-
-**Algorithm:** Sobel gradient calculation  
-**Output:** White edges on black background
-
-**Usage:**
-```java
-Converter converter = new EdgeDetection();
-converter.convert("photo.jpg", "edges.png");
-```
-
----
-
-### 6. **Horizontal Flip** (`FlipHorizontal.java`)
-Mirrors the image along the vertical axis (left ↔ right).
-
-**Implementation:** Fully recursive pixel remapping
-
-**Usage:**
-```java
-Converter converter = new FlipHorizontal();
-converter.convert("original.jpg", "flipped.png");
-```
-
----
-
-### 7. **Glitch Effect** (`Glitch.java`)
-Creates digital distortion by randomly shifting RGB channels.
-
-**Effect:** Chromatic aberration and VHS-style corruption  
-**Randomization:** 1-10 pixel shifts per scanline
-
-**Usage:**
-```java
-Converter converter = new Glitch();
-converter.convert("photo.jpg", "glitched.png");
-```
-
----
-
-### 8. **Color Inversion** (`Invert.java`)
-Creates a photographic negative by inverting all RGB values.
-
-**Formula:** `newValue = 255 - oldValue`  
-**Implementation:** Recursive block-based processing
-
-**Usage:**
-```java
-Converter converter = new Invert();
-converter.convert("photo.jpg", "negative.png");
-```
-
----
-
-### 9. **Pixelation** (`Pixelate.java`)
-Creates a retro, low-resolution mosaic effect.
-
-**Block Size:** 10×10 pixels (default)  
-**Method:** Average color per block
-
-**Usage:**
-```java
-Converter converter = new Pixelate();
-converter.convert("hires.jpg", "pixelated.png");
-```
-
----
-
-### 10. **90° Rotation** (`Rotate.java`)
-Rotates the image 90 degrees clockwise.
-
-**Transformation:** (x, y) → (height - 1 - y, x)  
-**Output Dimensions:** Width and height swapped
-
-**Usage:**
-```java
-Converter converter = new Rotate();
-converter.convert("landscape.jpg", "portrait.png");
-```
-
-## 📁 Project Structure
-
-```
-pixelcraft/
-├── ARGB.java              # Color model for ARGB pixel manipulation
-├── Converter.java         # Abstract base class (Template Method pattern)
-├── Blur.java              # 5x5 box blur implementation
-├── Brighten.java          # Additive brightness adjustment
-├── EdgeDetection.java     # Recursive Sobel edge detection
-├── FlipHorizontal.java    # Horizontal image mirroring
-├── Glitch.java            # RGB channel shift effect
-├── Grayscale.java         # Color to monochrome conversion
-├── Invert.java            # Color inversion (negative)
-├── Pixelate.java          # Block-based pixelation effect
-├── Rotate.java            # 90° clockwise rotation
-├── Sepia.java             # Vintage sepia tone filter
-├── PixelCraft.java        # Main application entry point
-├── Image-Results/         # Output directory for processed images
-└── README.md              # This file
-```
-
-## 🛠️ Technical Implementation
-
-### Design Patterns
-
-**Template Method Pattern:**  
-The `Converter` abstract class defines the skeleton of the image processing algorithm, with subclasses implementing specific transformations via the `processImage()` method.
-
-```java
-public abstract class Converter {
-    public void convert(String input, String output) throws IOException {
-        BufferedImage img = ImageIO.read(new File(input));
-        BufferedImage processed = processImage(img);  // Template method
-        ImageIO.write(processed, "PNG", new File(output));
-    }
-    
-    protected abstract BufferedImage processImage(BufferedImage img);
-}
-```
-
-### Key Technologies
-
-| Component | Technology |
-|-----------|-----------|
-| **Language** | Java 8+ |
-| **Image I/O** | javax.imageio.ImageIO |
-| **Graphics** | java.awt.image.BufferedImage |
-| **Color Model** | Custom ARGB class with bit manipulation |
-| **Architecture** | Object-oriented with inheritance |
-
-### Recursive Algorithms
-
-Several converters demonstrate advanced recursive techniques:
-
-- **EdgeDetection**: Row-batch recursion with gradient calculation
-- **FlipHorizontal**: Row-by-row, pixel-by-pixel recursion
-- **Invert**: Divide-and-conquer block processing
-- **Sepia**: Simple row-based tail recursion
-
-### Image Format Support
-
-| Format | Input | Output |
-|--------|-------|--------|
-| **PNG** | ✅ | ✅ (Default) |
-| **JPEG/JPG** | ✅ | ❌ |
-| **BMP** | ✅ | ❌ |
-| **GIF** | ✅ | ❌ |
-
-*Output is always PNG to preserve quality and transparency.*
-
-## 🔮 Future Enhancements
-
-### Planned Features
-- [ ] **GUI Interface**: JavaFX/Swing-based visual editor
-- [ ] **Batch Processing**: Process multiple images at once
-- [ ] **CLI Arguments**: Command-line parameter support
-- [ ] **Additional Filters**:
-  - Sharpen effect
-  - Emboss effect
-  - Oil painting style
-  - Gaussian blur (vs. box blur)
-- [ ] **Advanced Transformations**:
-  - Arbitrary angle rotation
-  - Scaling/resizing
-  - Cropping utilities
-- [ ] **Performance Optimizations**:
-  - Multi-threading for large images
-  - GPU acceleration research
-- [ ] **File Format Expansion**:
-  - GIF animation support
-  - TIFF support
-  - WebP support
-- [ ] **Undo/Redo System**: History management for effects
-- [ ] **Effect Presets**: Pre-configured effect chains
-- [ ] **Real-time Preview**: Live effect preview before saving
-
-### Technical Improvements
-- [ ] Unit testing with JUnit
-- [ ] JavaDoc generation automation
-- [ ] Maven/Gradle build system
-- [ ] Continuous Integration (CI/CD)
-- [ ] Performance benchmarking suite
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can help improve PixelCraft:
-
-### How to Contribute
-
-1. **Fork the repository**
-2. **Create a feature branch:**
-   ```bash
-   git checkout -b feature/AmazingFeature
-   ```
-3. **Make your changes and commit:**
-   ```bash
-   git commit -m 'Add some AmazingFeature'
-   ```
-4. **Push to the branch:**
-   ```bash
-   git push origin feature/AmazingFeature
-   ```
-5. **Open a Pull Request**
-
-### Contribution Guidelines
-
-- Follow existing code style and conventions
-- Add JavaDoc comments to all public methods
-- Test your changes thoroughly
-- Update README if adding new features
-- Keep commits focused and well-described
-
-### Areas for Contribution
-
-- 🐛 Bug fixes and issue resolution
-- ✨ New image effect implementations
-- 📚 Documentation improvements
-- 🎨 GUI development
-- ⚡ Performance optimizations
-- 🧪 Test coverage expansion
-
-## 👥 Contributors
-
+Contributors
 <table>
   <tr>
     <td align="center">
