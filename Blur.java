@@ -5,10 +5,6 @@ import java.awt.image.BufferedImage;
  * This implementation uses a 25-pixel neighborhood averaging technique to create
  * a strong blur effect. Each pixel's RGB values are replaced with the average
  * of all valid pixels in a 5x5 grid centered on that pixel.
- * 
- * @author Salam Mosawi
- * @version 1.0
- * @since 2024
  */
 public class Blur extends Converter {
     
@@ -63,3 +59,4 @@ public class Blur extends Converter {
         return result;
     }
 }
+
