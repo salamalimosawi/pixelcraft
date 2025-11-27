@@ -4,43 +4,41 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 /**
- * The Converter class is an abstract class that provides methods
- * for converting and processing images.
+ * Abstract base class for image conversion and processing operations.
+ * This class provides a template for image processing workflows using the
+ * Template Method design pattern. Subclasses must implement the
+ * method to define specific transformations.
  */
 public abstract class Converter {
-
-	/**
-	 * Converts the input image to a new output image.
-	 * 
-	 * This method reads the input image, applies a transformation to it based on the subclasses 
-	 * implemented through the abstract processImage method, and then saves the processed image
-	 * to the specified output file.
-	 * 
-	 * @param inputFileName  The name of the input file to read from
-	 * @param outputFileName The name of the output file to save to
-	 * @throws IOException If an error occurs during reading or writing the image file
-	 */
-	public void convert(String inputFileName, String outputFileName) throws IOException {
-
-		// Read the input image file
-		File inputFile = new File(inputFileName);
-		BufferedImage img = ImageIO.read(inputFile);
-
-		BufferedImage processedImg = processImage(img);
-
-		// Save the output image to a file
-		File outputFile = new File(outputFileName);
-		ImageIO.write(processedImg, "PNG", outputFile);
-	}
-
-	/**
-	 * Abstract method to process the image.
-	 * 
-	 * This method must be implemented by subclasses in order to define how the image should
-	 * be transformed (e.g., rotating, applying filters).
-	 * 
-	 * @param img The image to be processed
-	 * @return A new BufferedImage that represents the processed image
-	 */
-	protected abstract BufferedImage processImage(BufferedImage img);
+    
+    /**
+     * Converts an input image file to an output image file with processing.
+     * This method reads the input file, applies the transformation defined in
+     * and saves the result in PNG format.
+     * 
+     * @param inputFileName  The path to the input image file
+     * @param outputFileName The path where the processed image will be saved
+     * @throws IOException If an error occurs during file I/O operations
+     */
+    public void convert(String inputFileName, String outputFileName) throws IOException {
+        // Read the input image file
+        File inputFile = new File(inputFileName);
+        BufferedImage img = ImageIO.read(inputFile);
+        
+        BufferedImage processedImg = processImage(img);
+        
+        // Save the output image to a file
+        File outputFile = new File(outputFileName);
+        ImageIO.write(processedImg, "PNG", outputFile);
+    }
+    
+    /**
+     * Processes the input image and returns the transformed result.
+     * This abstract method must be implemented by all subclasses to define
+     * the specific image transformation to be applied.
+     * 
+     * @param img The input BufferedImage to be processed
+     * @return A new BufferedImage representing the processed result
+     */
+    protected abstract BufferedImage processImage(BufferedImage img);
 }
