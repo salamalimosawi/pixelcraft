@@ -3,7 +3,6 @@
 A powerful Java-based image manipulation tool that provides various converters and effects for image processing.
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## 📋 Table of Contents
 - [Overview](#overview)
